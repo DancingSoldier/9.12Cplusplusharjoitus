@@ -1,0 +1,84 @@
+#include <string>
+#include <vector>
+
+// Maastotyyppi
+struct TerrainType {
+    std::string name;             
+    double movementDifficulty;    // Liikkumisvaikeuskerroin
+    double combatDifficulty;      // Taisteluvaikeuskerroin
+};
+
+// Maastoruutu
+struct TerrainTile {
+    TerrainType* terrainType;                     // Viittaus maastotyyppiin
+    std::vector<void*> objects;                  // Lista objekteista (void* sallii sekatyypit)
+    std::vector<void*> enemies;                  // Lista vihollisista
+};
+
+// Objekti
+struct Object {
+    std::string name;
+    int hpEffect;
+    int goldEffect;
+    Object(const std::string& name, int hpEffect, int goldEffect)
+        : name(name), hpEffect(hpEffect), goldEffect(goldEffect) {}
+};
+
+// Taisteluvaruste
+struct CombatEquipment : public Object {
+    int attackPower;
+    int defensePower;
+    CombatEquipment(const std::string& name, int hpEffect, int goldEffect, int attackPower, int defensePower)
+        : Object(name, hpEffect, goldEffect), attackPower(attackPower), defensePower(defensePower) {}
+};
+
+// Vihollinen
+struct Enemy {
+    std::string type;
+    int attackPower;
+    int defensePower;
+    int hitPoints;
+    Enemy(const std::string& type, int attackPower, int defensePower, int hitPoints)
+        : type(type), attackPower(attackPower), defensePower(defensePower), hitPoints(hitPoints) {}
+};
+
+// Pelihahmo
+struct PlayerCharacter {
+    std::string name;
+    int level;
+    int hitPoints;
+    int maxHitPoints;
+    int gold;
+    PlayerCharacter(const std::string& name, int level, int hitPoints, int maxHitPoints, int gold)
+        : name(name), level(level), hitPoints(hitPoints), maxHitPoints(maxHitPoints), gold(gold) {}
+};
+
+// Karttapohja
+struct GameMap {
+    int width;
+    int height;
+    std::vector<std::vector<TerrainTile>> tiles; // 2D-vektori maastoruuduista
+};
+
+int main() {
+    // Maastotyypit
+    TerrainType forest = { "Forest", 2.0, 1.5 };
+    TerrainType mountain = { "Mountain", 3.0, 2.0 };
+
+    // Maastoruutu
+    TerrainTile tile1;
+    tile1.terrainType = &forest;
+
+    // Vihollinen
+    Enemy orc("Orc", 50, 30, 75);
+    tile1.enemies.push_back(&orc);
+
+    // Taisteluvaruste
+    CombatEquipment axe("Axe", 0, 0, 10, 2);
+    tile1.objects.push_back(&axe);
+
+    // Pelihahmo
+    PlayerCharacter player("Hero", 1, 100, 100, 50);
+
+    return 0;
+}
